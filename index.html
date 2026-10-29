@@ -151,6 +151,15 @@
           <div class="settings-group"><h4>文字大小</h4><div class="font-options"><button data-font="14">小</button><button data-font="15">标准</button><button data-font="17">大</button></div></div>
 
           <div class="settings-group">
+            <h4>气泡大小<span id="bub-pct" class="group-value">100%</span></h4>
+            <div class="bub-slider">
+              <input id="bub-range" type="range" min="80" max="140" step="1" value="100" aria-label="气泡大小">
+              <div class="bub-ends"><span>小 80%</span><span>标准 100%</span><span>大 140%</span></div>
+            </div>
+            <p class="local-note">文字、留白、气泡宽度一起缩放 · 只影响聊天里的气泡。</p>
+          </div>
+
+          <div class="settings-group">
             <h4>气泡</h4>
             <div id="bubble-skins" class="skin-grid" role="group" aria-label="气泡皮肤"></div>
             <div class="bubble-preview" id="bubble-preview">
