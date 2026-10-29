@@ -14,11 +14,11 @@
   function formatTime(date = new Date()) {
     return [date.getHours(), date.getMinutes(), date.getSeconds()].map(pad).join(':');
   }
-  /* 气泡大小（照 18 的第 29 单）：百分比 80~140，100 = 默认。
+  /* 气泡大小（照 18 的第 29 单）：百分比 20~100，100 = 标准，也是上限 —— 即改动前的样子。
      只作用在聊天气泡上（字号 / 留白 / 最大宽度 / 小尾巴一起缩放），不动别的界面。
      写成 CSS 变量 --bub-k 由样式表 calc() 相乘，默认档 1 与改动前逐像素一致。 */
-  const BUB_MIN = 80;
-  const BUB_MAX = 140;
+  const BUB_MIN = 20;
+  const BUB_MAX = 100;
   const BUB_DEF = 100;
   function bubClamp(v) {
     const n = Math.round(Number(v));
@@ -27,10 +27,10 @@
   }
   function bubLabel(v) {
     const n = bubClamp(v);
-    if (n <= 90) return '偏小';
-    if (n <= 110) return '标准';
-    if (n <= 125) return '偏大';
-    return '很大';
+    if (n <= 35) return '很小';
+    if (n <= 60) return '偏小';
+    if (n <= 85) return '接近标准';
+    return '标准';
   }
 
   /* 时间分隔条：双方静默满 30 分钟后再来消息，就在那条消息上方插一条「时间 + 小字」。
