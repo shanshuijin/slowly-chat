@@ -61,7 +61,7 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .message-meta { display: flex; align-items: center; flex-direction: column; flex-shrink: 0; width: 52px; gap: 9px; }
 .message-avatar { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; }
 .message-meta time { font-family: "SFMono-Regular", Consolas, monospace; font-size: 9px; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
-.bubble { position: relative; background: #fff; padding: calc(13px * var(--bub-k)) calc(17px * var(--bub-k)); font-size: calc(var(--message-size) * var(--bub-k)); line-height: 1.75; max-width: min(calc(420px * var(--bub-k)), calc(100% - 78px)); min-width: calc(35px * var(--bub-k)); margin-top: 2px; overflow-wrap: anywhere; }
+.bubble { position: relative; background: #fff; padding: calc(13px * var(--bub-k)) calc(17px * var(--bub-k)); font-size: calc(var(--message-size) * var(--bub-k)); line-height: 1.75; max-width: min(calc(420px * var(--bub-k)), calc(100% - 78px)); min-width: 0; margin-top: 2px; overflow-wrap: anywhere; }
 .bubble::before { content: ""; position: absolute; width: 0; height: 0; top: calc(15px * var(--bub-k)); left: calc(-7px * var(--bub-k)); border-top: calc(7px * var(--bub-k)) solid transparent; border-bottom: calc(7px * var(--bub-k)) solid transparent; border-right: calc(7px * var(--bub-k)) solid #fff; }
 .self .bubble { background: var(--bubble-self); color: #fff; }
 .self .bubble::before { left: auto; right: calc(-7px * var(--bub-k)); border-right: 0; border-left: calc(7px * var(--bub-k)) solid var(--bubble-self); }
