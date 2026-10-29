@@ -14,6 +14,25 @@
   function formatTime(date = new Date()) {
     return [date.getHours(), date.getMinutes(), date.getSeconds()].map(pad).join(':');
   }
+  /* 气泡大小（照 18 的第 29 单）：百分比 80~140，100 = 默认。
+     只作用在聊天气泡上（字号 / 留白 / 最大宽度 / 小尾巴一起缩放），不动别的界面。
+     写成 CSS 变量 --bub-k 由样式表 calc() 相乘，默认档 1 与改动前逐像素一致。 */
+  const BUB_MIN = 80;
+  const BUB_MAX = 140;
+  const BUB_DEF = 100;
+  function bubClamp(v) {
+    const n = Math.round(Number(v));
+    if (!Number.isFinite(n) || n <= 0) return BUB_DEF;   /* ''/null/NaN 走默认，别被 +''=0 夹成下限 */
+    return Math.max(BUB_MIN, Math.min(BUB_MAX, n));
+  }
+  function bubLabel(v) {
+    const n = bubClamp(v);
+    if (n <= 90) return '偏小';
+    if (n <= 110) return '标准';
+    if (n <= 125) return '偏大';
+    return '很大';
+  }
+
   /* 时间分隔条：双方静默满 30 分钟后再来消息，就在那条消息上方插一条「时间 + 小字」。
      只在渲染时算，不写进消息里 —— 旧记录照样能补出分隔，删掉消息也不会留下孤儿分隔。 */
   const TIME_GAP = 30 * 60 * 1000;
@@ -938,7 +957,7 @@
     return {
       peerName: '对方', selfName: '我', peerAvatar: '', selfAvatar: '',
       showTime: true, fontSize: 15, background: 'soft',
-      bubbleSkin: 'classic', bubbleCss: '',
+      bubbleSkin: 'classic', bubbleCss: '', bubScale: BUB_DEF,
       startedAt: new Date().toISOString(), choices: [],
       walls: { chat: '' },
       settings: normSettings({}),
@@ -963,6 +982,7 @@
     /* 皮肤与自定义 CSS 都要归一：只写不归一 = 刷新就丢（本站的老教训）。 */
     if (BUBBLE_SKINS.some(skin => skin.id === value.bubbleSkin)) result.bubbleSkin = value.bubbleSkin;
     result.bubbleCss = sanitizeUserCss(value.bubbleCss);
+    result.bubScale = bubClamp(value.bubScale);
     if (typeof value.startedAt === 'string' && Number.isFinite(Date.parse(value.startedAt))) result.startedAt = value.startedAt;
     if (value.walls && isImage(value.walls.chat, WALL_MAX)) result.walls = { chat: value.walls.chat };
     result.settings = normSettings(value.settings);
@@ -1001,6 +1021,7 @@
   const api = {
     PEER_ID, UNCAT, STORE_KEY, MAX_MSG, IMAGE_MAX, WALL_MAX, IMPORT_MAX_CARDS,
     TIME_GAP, GAP_NOTE, gapText, gapFlags,
+    BUB_MIN, BUB_MAX, BUB_DEF, bubClamp, bubLabel,
     SETTINGS, SETTING_KEYS, POKE_DEFAULT, SEED_GROUPS, FALLBACK_TALK,
     createState, normalizeState, formatTime, createMessage, choose, validateImage,
     newId, cleanText, clampInt, isImage,
