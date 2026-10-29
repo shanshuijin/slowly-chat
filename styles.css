@@ -7,6 +7,7 @@
   --chat-bg: #f5f5f5;
   --bubble-self: #303030;
   --message-size: 15px;
+  --bub-k: 1;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
   color: var(--ink);
   background: #ededed;
@@ -60,12 +61,12 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .message-meta { display: flex; align-items: center; flex-direction: column; flex-shrink: 0; width: 52px; gap: 9px; }
 .message-avatar { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; }
 .message-meta time { font-family: "SFMono-Regular", Consolas, monospace; font-size: 9px; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1; white-space: nowrap; }
-.bubble { position: relative; background: #fff; padding: 13px 17px; font-size: var(--message-size); line-height: 1.75; max-width: min(420px, calc(100% - 78px)); min-width: 35px; margin-top: 2px; overflow-wrap: anywhere; }
-.bubble::before { content: ""; position: absolute; width: 0; height: 0; top: 15px; left: -7px; border-top: 7px solid transparent; border-bottom: 7px solid transparent; border-right: 7px solid #fff; }
+.bubble { position: relative; background: #fff; padding: calc(13px * var(--bub-k)) calc(17px * var(--bub-k)); font-size: calc(var(--message-size) * var(--bub-k)); line-height: 1.75; max-width: min(calc(420px * var(--bub-k)), calc(100% - 78px)); min-width: calc(35px * var(--bub-k)); margin-top: 2px; overflow-wrap: anywhere; }
+.bubble::before { content: ""; position: absolute; width: 0; height: 0; top: calc(15px * var(--bub-k)); left: calc(-7px * var(--bub-k)); border-top: calc(7px * var(--bub-k)) solid transparent; border-bottom: calc(7px * var(--bub-k)) solid transparent; border-right: calc(7px * var(--bub-k)) solid #fff; }
 .self .bubble { background: var(--bubble-self); color: #fff; }
-.self .bubble::before { left: auto; right: -7px; border-right: 0; border-left: 7px solid var(--bubble-self); }
+.self .bubble::before { left: auto; right: calc(-7px * var(--bub-k)); border-right: 0; border-left: calc(7px * var(--bub-k)) solid var(--bubble-self); }
 .bubble p { margin: 0; white-space: pre-wrap; }
-.bubble blockquote { margin: 0 0 9px; padding: 5px 9px; background: #f5f5f5; color: #929292; font-size: 11px; line-height: 1.6; border-left: 2px solid #dedede; }
+.bubble blockquote { margin: 0 0 9px; padding: calc(5px * var(--bub-k)) calc(9px * var(--bub-k)); background: #f5f5f5; color: #929292; font-size: calc(11px * var(--bub-k)); line-height: 1.6; border-left: 2px solid #dedede; }
 .conversation-end { color: #b1b1b1; font-size: 9px; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; gap: 11px; padding: 33px 0 28px; }
 .conversation-end span { width: 20px; height: 1px; background: #ddd; }
 .composer-area { border-top: 1px solid var(--line); background: #fff; padding: 18px 26px max(10px, env(safe-area-inset-bottom)); flex-shrink: 0; }
@@ -189,11 +190,21 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
 .font-options { display: flex; gap: 12px; }
 .font-options button { flex: 1; border: 1px solid var(--line); padding: 13px; font-size: 12px; border-radius: 4px; color: #999; }
 .font-options button[aria-pressed="true"] { color: #222; border-color: #555; }
+/* 气泡大小：一条连续滑块 80~140，百分比跟手，两端标注。 */
+.group-value { float: right; font-size: 11px; color: #999; font-variant-numeric: tabular-nums; letter-spacing: .5px; }
+.bub-slider { margin: 4px 0 12px; }
+.bub-slider input[type="range"] { width: 100%; height: 22px; background: transparent; cursor: pointer; }
+.bub-slider input[type="range"]::-webkit-slider-runnable-track { height: 3px; background: #e6e6e6; border-radius: 2px; }
+.bub-slider input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; margin-top: -6.5px; border-radius: 50%; background: #fff; border: 1.5px solid #555; }
+.bub-slider input[type="range"]::-moz-range-track { height: 3px; background: #e6e6e6; border-radius: 2px; }
+.bub-slider input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 1.5px solid #555; }
+.bub-slider input[type="range"]:focus-visible { outline: 2px solid #777; outline-offset: 4px; }
+.bub-ends { display: flex; justify-content: space-between; font-size: 10px; color: #b0b0b0; letter-spacing: .3px; margin-top: 2px; }
 .bubble-preview { background: var(--chat-bg); padding: 18px 18px 20px; font-size: var(--message-size); display: flex; flex-direction: column; gap: 16px; border-radius: 6px; }
 .bubble-preview > p { font-size: 9px; color: #999; margin: 0; letter-spacing: 2px; }
 .bubble-preview .message-row { gap: 11px; }
 .bubble-preview .message-avatar { width: 32px; height: 32px; }
-.bubble-preview .bubble { max-width: calc(100% - 46px); font-size: 13px; margin-top: 0; }
+.bubble-preview .bubble { max-width: calc(100% - 46px); font-size: calc(13px * var(--bub-k)); margin-top: 0; }
 .field-hint { color: #999; font-size: 10px; margin: -13px 0 25px; }
 .decision-result { text-align: center; border: 1px solid var(--line); padding: 30px 20px 20px; margin-top: 28px; background: #fafafa; }
 .decision-result > span { font-size: 10px; color: #999; letter-spacing: 3px; }
@@ -238,8 +249,8 @@ svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width:
   .message-meta { width: 47px; }
   .message-avatar { width: 42px; height: 42px; }
   .message-meta time { font-size: 8px; }
-  .bubble { padding: 10px 13px; line-height: 1.8; max-width: calc(100% - 67px); }
-  .bubble blockquote { font-size: 10px; }
+  .bubble { padding: calc(10px * var(--bub-k)) calc(13px * var(--bub-k)); line-height: 1.8; max-width: calc(100% - 67px); }
+  .bubble blockquote { font-size: calc(10px * var(--bub-k)); }
   .conversation-end { padding: 29px 0 26px; }
   .composer-area { padding: 15px 14px max(11px, env(safe-area-inset-bottom)); }
   .composer { gap: 9px; }
