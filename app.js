@@ -175,6 +175,8 @@
     app.dataset.background = state.background;
     app.dataset.showTime = String(state.showTime);
     app.style.setProperty('--message-size', state.fontSize + 'px');
+    /* 气泡大小：只写一个系数变量，样式表里 calc() 相乘 —— 不重绘任何东西。 */
+    app.style.setProperty('--bub-k', String(model.bubClamp(state.bubScale) / 100));
     const conversation = $('#conversation');
     conversation.classList.toggle('has-wall', !!state.walls.chat);
     if (state.walls.chat) conversation.style.setProperty('--chat-wall', "url('" + state.walls.chat + "')");
@@ -182,7 +184,22 @@
     $$('.background-option').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.background === state.background)));
     $$('.font-options button').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.font) === state.fontSize)));
     $$('[data-skin]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.skin === state.bubbleSkin)));
+    syncBubScale();
     applyBubbleLayers();
+  }
+  /* 气泡大小滑块：拖动时只改变量 + 两个文本节点，绝不重绘（重绘会把手指按着的滑块换掉）。 */
+  function syncBubScale() {
+    const pct = model.bubClamp(state.bubScale);
+    const range = $('#bub-range');
+    const out = $('#bub-pct');
+    if (range && Number(range.value) !== pct) range.value = String(pct);
+    if (out) out.textContent = pct + '%';
+  }
+  function setBubScale(value) {
+    state = Object.assign({}, state, { bubScale: model.bubClamp(value) });
+    save();
+    $('#app').style.setProperty('--bub-k', String(model.bubClamp(state.bubScale) / 100));
+    syncBubScale();
   }
   function setBubbleSkin(id) {
     if (!model.BUBBLE_SKINS.some(skin => skin.id === id)) return;
@@ -641,6 +658,7 @@
     save();
     applyAppearance();
   }));
+  $('#bub-range').addEventListener('input', event => setBubScale(event.target.value));
   $('#bubble-css-open').addEventListener('click', openBubbleCss);
   $('#bubble-css-reset').addEventListener('click', () => {
     confirmSheet({
